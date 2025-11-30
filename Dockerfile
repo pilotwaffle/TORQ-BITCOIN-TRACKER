@@ -1,7 +1,7 @@
 # TBWI - Torq Bitcoin Whale Intelligence
 # Multi-stage Dockerfile for all services
 
-FROM python:3.11-slim as base
+FROM python:3.11-slim AS base
 
 # Set environment variables
 ENV PYTHONDONTWRITEBYTECODE=1 \
@@ -20,13 +20,13 @@ RUN useradd --create-home --shell /bin/bash app
 
 WORKDIR /app
 
-# Install Python dependencies
+# Copy application code first (needed for pip install -e .)
 COPY pyproject.toml ./
+COPY src/ ./src/
+
+# Install Python dependencies
 RUN pip install --upgrade pip setuptools wheel && \
     pip install -e .
-
-# Copy application code
-COPY src/ ./src/
 
 # Change ownership to app user
 RUN chown -R app:app /app
@@ -40,22 +40,22 @@ CMD ["python", "-m", "tbwi.api.main"]
 # Service-specific targets
 # -----------------------------------------------------------------------------
 
-FROM base as api
+FROM base AS api
 ENV SERVICE=api
 CMD ["python", "-m", "tbwi.api.main"]
 
-FROM base as zmq-listener
+FROM base AS zmq-listener
 ENV SERVICE=zmq-listener
 CMD ["python", "-m", "tbwi.services.zmq_listener"]
 
-FROM base as classifier
+FROM base AS classifier
 ENV SERVICE=classifier
 CMD ["python", "-m", "tbwi.services.classifier"]
 
-FROM base as event-engine
+FROM base AS event-engine
 ENV SERVICE=event-engine
 CMD ["python", "-m", "tbwi.services.event_engine"]
 
-FROM base as webhook-dispatcher
+FROM base AS webhook-dispatcher
 ENV SERVICE=webhook-dispatcher
 CMD ["python", "-m", "tbwi.services.webhook_dispatcher"]
