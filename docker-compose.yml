@@ -189,7 +189,7 @@ services:
       postgres:
         condition: service_healthy
     ports:
-      - "8000:8000"
+      - "8080:8000"
     environment:
       - BITCOIN_RPC_HOST=bitcoin-core
       - BITCOIN_RPC_PORT=18332
