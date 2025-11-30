@@ -1,0 +1,44 @@
+# TBWI - Configuration File
+# This file provides default configuration values.
+# Environment variables take precedence over these values.
+
+# Network configuration
+network: testnet
+
+# Transaction thresholds
+min_tx_threshold_btc: 10
+large_tx_threshold_btc: 50
+
+# Whale event detection thresholds
+whale_event_thresholds:
+  # Single massive deposit threshold (triggers WH_EXCHANGE_SINGLE_DEPOSIT)
+  single_deposit_btc: 1000
+
+  # Deposit burst detection (triggers WH_EXCHANGE_DEPOSIT_BURST)
+  deposit_burst:
+    min_tx_count: 10
+    min_total_btc: 1000
+    window_minutes: 10
+
+  # Exchange outflow detection (triggers WH_EXCHANGE_BULK_OUTFLOW)
+  exchange_outflow:
+    min_tx_count: 3
+    min_total_btc: 10000
+    window_minutes: 30
+
+# Price oracle configuration
+price_oracle:
+  enabled: true
+  url: "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin&vs_currencies=usd"
+  cache_ttl_seconds: 60
+
+# Webhook configuration
+webhook:
+  enabled: true
+  urls: []
+  # Example webhook URLs:
+  # urls:
+  #   - "https://n8n.torq.co/webhook/whale-event"
+  #   - "https://slack.webhook.example.com/xxx"
+  retry_max_attempts: 3
+  retry_base_delay_seconds: 1.0

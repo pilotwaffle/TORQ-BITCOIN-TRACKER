@@ -1,0 +1,64 @@
+{
+  "description": "Seed data for entity tags. Import using the API or database migration.",
+  "version": "1.0",
+  "tags": [
+    {
+      "address": "bc1qm34lsc65zpw79lxes69zkqmk6ee3ewf0j77s3h",
+      "label": "Binance",
+      "category": "exchange_deposit",
+      "confidence": 0.95,
+      "source": "known_addresses"
+    },
+    {
+      "address": "bc1qgdjqv0av3q56jvd82tkdjpy7gdp9ut8tlqmgrpmv24sq90ecnvqqjwvw97",
+      "label": "Bitfinex",
+      "category": "exchange_cold",
+      "confidence": 0.95,
+      "source": "known_addresses"
+    },
+    {
+      "address": "bc1qa5wkgaew2dkv56kfvj49j0av5nml45x9ek9hz6",
+      "label": "Kraken",
+      "category": "exchange_hot",
+      "confidence": 0.90,
+      "source": "known_addresses"
+    },
+    {
+      "address": "bc1q7cyrfmck2ffu2ud3rn5l5a8yv6f0chkp0zpemf",
+      "label": "Coinbase",
+      "category": "exchange_cold",
+      "confidence": 0.95,
+      "source": "known_addresses"
+    },
+    {
+      "address": "3M219KR5vEneNb47ewrPfWyb5jQ2DjxRP6",
+      "label": "Coinbase",
+      "category": "exchange_hot",
+      "confidence": 0.90,
+      "source": "known_addresses"
+    },
+    {
+      "address": "bc1qjh0akslml59uuczddqu0y4p3vj64hg5kxlwpk9",
+      "label": "OKX",
+      "category": "exchange_deposit",
+      "confidence": 0.85,
+      "source": "known_addresses"
+    },
+    {
+      "address": "bc1qx9t2l3pyny2spqpqlye8svce70nppwtaxwdrp4",
+      "label": "Huobi",
+      "category": "exchange_deposit",
+      "confidence": 0.85,
+      "source": "known_addresses"
+    }
+  ],
+  "notes": [
+    "These are example addresses for demonstration purposes.",
+    "In production, use comprehensive address datasets from services like:",
+    "- Chainalysis",
+    "- Glassnode",
+    "- Crystal Blockchain",
+    "- OXT.me",
+    "Update this file regularly to maintain accuracy."
+  ]
+}

@@ -1,0 +1,96 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tbwi"
+version = "1.0.0"
+description = "Torq Bitcoin Whale Intelligence - Real-time Bitcoin mempool streaming and whale activity detection"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.11"
+authors = [
+    {name = "Torq Business Solutions", email = "dev@torq.co"}
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Financial and Insurance Industry",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Office/Business :: Financial",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+keywords = ["bitcoin", "blockchain", "whale", "mempool", "trading", "analytics"]
+
+dependencies = [
+    "fastapi>=0.104.0",
+    "uvicorn[standard]>=0.24.0",
+    "pydantic>=2.5.0",
+    "pydantic-settings>=2.1.0",
+    "sqlalchemy>=2.0.23",
+    "asyncpg>=0.29.0",
+    "alembic>=1.12.0",
+    "pyzmq>=25.1.0",
+    "python-bitcoinlib>=0.12.2",
+    "httpx>=0.25.0",
+    "aiohttp>=3.9.0",
+    "redis>=5.0.0",
+    "structlog>=23.2.0",
+    "prometheus-client>=0.19.0",
+    "python-dotenv>=1.0.0",
+    "pyyaml>=6.0.1",
+    "tenacity>=8.2.3",
+    "cachetools>=5.3.2",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-asyncio>=0.21.0",
+    "pytest-cov>=4.1.0",
+    "black>=23.11.0",
+    "ruff>=0.1.5",
+    "mypy>=1.7.0",
+    "pre-commit>=3.5.0",
+]
+
+[project.scripts]
+tbwi-zmq-listener = "tbwi.services.zmq_listener:main"
+tbwi-classifier = "tbwi.services.classifier:main"
+tbwi-event-engine = "tbwi.services.event_engine:main"
+tbwi-api = "tbwi.api.main:main"
+tbwi-dispatcher = "tbwi.services.webhook_dispatcher:main"
+
+[project.urls]
+Homepage = "https://github.com/torq/tbwi"
+Documentation = "https://github.com/torq/tbwi#readme"
+Repository = "https://github.com/torq/tbwi"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.black]
+line-length = 100
+target-version = ["py311"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+select = ["E", "F", "I", "N", "W", "UP", "B", "C4", "SIM"]
+ignore = ["E501"]
+
+[tool.mypy]
+python_version = "3.11"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+plugins = ["pydantic.mypy"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+addopts = "-v --cov=tbwi --cov-report=term-missing"

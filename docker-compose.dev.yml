@@ -1,0 +1,82 @@
+# TBWI - Development override configuration
+# Use with: docker-compose -f docker-compose.yml -f docker-compose.dev.yml up
+
+version: "3.9"
+
+services:
+  # Use local source code with hot reload
+  api:
+    build:
+      context: .
+      target: base
+    volumes:
+      - ./src:/app/src:ro
+    environment:
+      - ENVIRONMENT=development
+      - LOG_LEVEL=DEBUG
+    command: ["python", "-m", "uvicorn", "tbwi.api.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+
+  zmq-listener:
+    build:
+      context: .
+      target: base
+    volumes:
+      - ./src:/app/src:ro
+    environment:
+      - LOG_LEVEL=DEBUG
+    command: ["python", "-m", "tbwi.services.zmq_listener"]
+
+  classifier:
+    build:
+      context: .
+      target: base
+    volumes:
+      - ./src:/app/src:ro
+    environment:
+      - LOG_LEVEL=DEBUG
+    command: ["python", "-m", "tbwi.services.classifier"]
+
+  event-engine:
+    build:
+      context: .
+      target: base
+    volumes:
+      - ./src:/app/src:ro
+    environment:
+      - LOG_LEVEL=DEBUG
+    command: ["python", "-m", "tbwi.services.event_engine"]
+
+  webhook-dispatcher:
+    build:
+      context: .
+      target: base
+    volumes:
+      - ./src:/app/src:ro
+    environment:
+      - LOG_LEVEL=DEBUG
+    command: ["python", "-m", "tbwi.services.webhook_dispatcher"]
+
+  # Add pgAdmin for database management in development
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: tbwi-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@tbwi.local
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    restart: unless-stopped
+
+  # Add Redis Commander for Redis management
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    container_name: tbwi-redis-commander
+    environment:
+      REDIS_HOSTS: local:redis:6379
+    ports:
+      - "8081:8081"
+    depends_on:
+      - redis
+    restart: unless-stopped
