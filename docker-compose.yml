@@ -43,14 +43,14 @@ services:
       retries: 5
     restart: unless-stopped
 
-  # Bitcoin Core (testnet)
+  # Bitcoin Core (mainnet, pruned ~10GB)
+  # Set BITCOIN_NETWORK=mainnet in your .env file
   bitcoin-core:
     image: ruimarinho/bitcoin-core:24
     container_name: tbwi-bitcoin
     command:
-      - -testnet=1
       - -server=1
-      - -txindex=1
+      - -prune=10000
       - -rpcuser=${BITCOIN_RPC_USER:-btcuser}
       - -rpcpassword=${BITCOIN_RPC_PASSWORD:-btcpass}
       - -rpcallowip=0.0.0.0/0
@@ -61,11 +61,11 @@ services:
     volumes:
       - bitcoin_data:/home/bitcoin/.bitcoin
     ports:
-      - "18332:18332"  # RPC (testnet)
+      - "8332:8332"    # RPC (mainnet)
       - "28332:28332"  # ZMQ rawtx
       - "28333:28333"  # ZMQ rawblock
     healthcheck:
-      test: ["CMD", "bitcoin-cli", "-testnet", "-rpcuser=${BITCOIN_RPC_USER:-btcuser}", "-rpcpassword=${BITCOIN_RPC_PASSWORD:-btcpass}", "getblockchaininfo"]
+      test: ["CMD", "bitcoin-cli", "-rpcuser=${BITCOIN_RPC_USER:-btcuser}", "-rpcpassword=${BITCOIN_RPC_PASSWORD:-btcpass}", "getblockchaininfo"]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -90,7 +90,7 @@ services:
     environment:
       - BITCOIN_ZMQ_TX_ENDPOINT=tcp://bitcoin-core:28332
       - BITCOIN_ZMQ_BLOCK_ENDPOINT=tcp://bitcoin-core:28333
-      - BITCOIN_NETWORK=${BITCOIN_NETWORK:-testnet}
+      - BITCOIN_NETWORK=${BITCOIN_NETWORK:-mainnet}
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - THRESHOLD_MIN_TX_BTC=${MIN_TX_THRESHOLD_BTC:-10}
@@ -110,10 +110,10 @@ services:
         condition: service_healthy
     environment:
       - BITCOIN_RPC_HOST=bitcoin-core
-      - BITCOIN_RPC_PORT=18332
+      - BITCOIN_RPC_PORT=8332
       - BITCOIN_RPC_USER=${BITCOIN_RPC_USER:-btcuser}
       - BITCOIN_RPC_PASSWORD=${BITCOIN_RPC_PASSWORD:-btcpass}
-      - BITCOIN_NETWORK=${BITCOIN_NETWORK:-testnet}
+      - BITCOIN_NETWORK=${BITCOIN_NETWORK:-mainnet}
       - DB_HOST=postgres
       - DB_PORT=5432
       - DB_NAME=tbwi
@@ -138,7 +138,7 @@ services:
       postgres:
         condition: service_healthy
     environment:
-      - BITCOIN_NETWORK=${BITCOIN_NETWORK:-testnet}
+      - BITCOIN_NETWORK=${BITCOIN_NETWORK:-mainnet}
       - DB_HOST=postgres
       - DB_PORT=5432
       - DB_NAME=tbwi
@@ -192,10 +192,10 @@ services:
       - "8080:8000"
     environment:
       - BITCOIN_RPC_HOST=bitcoin-core
-      - BITCOIN_RPC_PORT=18332
+      - BITCOIN_RPC_PORT=8332
       - BITCOIN_RPC_USER=${BITCOIN_RPC_USER:-btcuser}
       - BITCOIN_RPC_PASSWORD=${BITCOIN_RPC_PASSWORD:-btcpass}
-      - BITCOIN_NETWORK=${BITCOIN_NETWORK:-testnet}
+      - BITCOIN_NETWORK=${BITCOIN_NETWORK:-mainnet}
       - DB_HOST=postgres
       - DB_PORT=5432
       - DB_NAME=tbwi
