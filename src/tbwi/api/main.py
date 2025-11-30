@@ -13,7 +13,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from tbwi import __version__
-from tbwi.api.routes import entities, events, health, transactions
+from tbwi.api.routes import entities, events, health, streaming, transactions
 from tbwi.config import get_settings
 from tbwi.db.session import close_db, init_db
 from tbwi.logging import get_logger, setup_logging
@@ -78,6 +78,7 @@ def create_app() -> FastAPI:
     app.include_router(events.router, prefix="/api/v1", tags=["Whale Events"])
     app.include_router(transactions.router, prefix="/api/v1", tags=["Transactions"])
     app.include_router(entities.router, prefix="/api/v1", tags=["Entity Tags"])
+    app.include_router(streaming.router, prefix="/api/v1", tags=["Streaming"])
 
     return app
 
