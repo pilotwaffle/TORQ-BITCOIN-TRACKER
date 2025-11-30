@@ -15,7 +15,7 @@ from typing import Any
 from uuid import uuid4
 
 from tbwi.config import get_settings
-from tbwi.db.repository import TransactionRepository, WhaleEventRepository
+from tbwi.db.repository import WhaleEventRepository
 from tbwi.db.session import get_db_session, init_db
 from tbwi.logging import get_logger, setup_logging
 from tbwi.models.schemas import (
@@ -25,8 +25,8 @@ from tbwi.models.schemas import (
     WhaleEvent,
     WhaleEventType,
 )
-from tbwi.services.message_queue import get_message_queue, close_message_queue
-from tbwi.services.price_oracle import get_price_oracle, close_price_oracle
+from tbwi.services.message_queue import close_message_queue, get_message_queue
+from tbwi.services.price_oracle import close_price_oracle
 
 logger = get_logger(__name__)
 

@@ -6,7 +6,6 @@ Provides async interface to Bitcoin Core JSON-RPC API.
 
 from __future__ import annotations
 
-import asyncio
 from typing import Any
 
 import httpx

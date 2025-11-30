@@ -3,10 +3,9 @@ Whale event endpoints for TBWI API.
 """
 
 from datetime import datetime
-from typing import Annotated
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, HTTPException, Query, status
 
 from tbwi.api.deps import APIKey, DBSession
 from tbwi.db.repository import WhaleEventRepository

@@ -9,7 +9,8 @@ from __future__ import annotations
 
 import asyncio
 import json
-from typing import Any, Callable, Awaitable
+from collections.abc import Awaitable, Callable
+from typing import Any
 
 import redis.asyncio as redis
 

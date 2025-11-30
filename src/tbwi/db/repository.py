@@ -5,17 +5,16 @@ Provides high-level database operations for transactions, events, and entity tag
 """
 
 from datetime import datetime
-from typing import Any
 from uuid import UUID
 
-from sqlalchemy import select, func, and_, or_
+from sqlalchemy import and_, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from tbwi.db.models import (
     ClassifiedTransactionModel,
     EntityTagModel,
-    WhaleEventModel,
     WebhookDeliveryModel,
+    WhaleEventModel,
 )
 from tbwi.models.schemas import (
     ClassifiedTransaction,

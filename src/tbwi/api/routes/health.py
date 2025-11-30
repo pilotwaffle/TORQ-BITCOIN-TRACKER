@@ -7,12 +7,11 @@ from datetime import datetime
 from fastapi import APIRouter, Response
 
 from tbwi import __version__
-from tbwi.config import get_settings
 from tbwi.db.session import get_db_session
 from tbwi.logging import get_logger
 from tbwi.models.schemas import HealthStatus
-from tbwi.services.message_queue import get_message_queue
 from tbwi.services.bitcoin_rpc import get_rpc_client
+from tbwi.services.message_queue import get_message_queue
 
 logger = get_logger(__name__)
 router = APIRouter()

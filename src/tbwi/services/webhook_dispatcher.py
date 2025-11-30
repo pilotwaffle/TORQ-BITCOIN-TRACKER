@@ -8,15 +8,14 @@ from __future__ import annotations
 
 import asyncio
 import signal
-from datetime import datetime
 from typing import Any
 
 import httpx
 from tenacity import (
     retry,
+    retry_if_exception_type,
     stop_after_attempt,
     wait_exponential,
-    retry_if_exception_type,
 )
 
 from tbwi.config import get_settings
@@ -24,7 +23,7 @@ from tbwi.db.repository import WebhookDeliveryRepository
 from tbwi.db.session import get_db_session, init_db
 from tbwi.logging import get_logger, setup_logging
 from tbwi.models.schemas import WebhookPayload, WhaleEvent
-from tbwi.services.message_queue import get_message_queue, close_message_queue
+from tbwi.services.message_queue import close_message_queue, get_message_queue
 
 logger = get_logger(__name__)
 

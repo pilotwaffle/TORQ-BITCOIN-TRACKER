@@ -6,7 +6,6 @@ Fetches and caches BTC/USD price for transaction enrichment.
 
 from __future__ import annotations
 
-import asyncio
 import time
 from typing import Any
 

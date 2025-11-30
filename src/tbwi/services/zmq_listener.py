@@ -8,7 +8,6 @@ from __future__ import annotations
 
 import asyncio
 import signal
-import sys
 from datetime import datetime
 from typing import Any
 
@@ -18,7 +17,7 @@ import zmq.asyncio
 from tbwi.config import get_settings
 from tbwi.logging import get_logger, setup_logging
 from tbwi.models.schemas import NormalizedTransaction, TransactionOutput
-from tbwi.services.message_queue import get_message_queue, MessageQueue
+from tbwi.services.message_queue import MessageQueue, get_message_queue
 
 logger = get_logger(__name__)
 
@@ -40,7 +39,7 @@ def parse_raw_transaction(raw_bytes: bytes, network: str) -> NormalizedTransacti
     """
     try:
         # Import bitcoin library for parsing
-        from bitcoin.core import CTransaction, x
+        from bitcoin.core import CTransaction
         from bitcoin.core.script import CScript
 
         # Parse the transaction
@@ -92,12 +91,8 @@ def _get_script_type(script: Any) -> str | None:
     """Determine script type."""
     try:
         from bitcoin.core.script import (
-            CScript,
             OP_0,
-            OP_CHECKSIG,
             OP_DUP,
-            OP_EQUAL,
-            OP_EQUALVERIFY,
             OP_HASH160,
         )
 
@@ -132,7 +127,6 @@ def _extract_address(script: Any, network: str) -> str | None:
     """Extract address from script."""
     try:
         # Use bitcoin library's address extraction
-        from bitcoin.wallet import CBitcoinAddress
 
         # This is simplified - in production you'd want more robust address extraction
         # For now, we rely on the enricher service to get addresses via RPC

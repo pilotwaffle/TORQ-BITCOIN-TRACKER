@@ -2,7 +2,7 @@
 Entity tag endpoints for TBWI API.
 """
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, HTTPException, Query, status
 
 from tbwi.api.deps import APIKey, DBSession
 from tbwi.db.repository import EntityTagRepository

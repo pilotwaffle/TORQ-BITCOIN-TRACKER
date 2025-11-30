@@ -190,7 +190,7 @@ class Settings(BaseSettings):
     environment: str = Field(default="development", description="Environment name")
 
     @classmethod
-    def from_yaml(cls, path: str | Path) -> "Settings":
+    def from_yaml(cls, path: str | Path) -> Settings:
         """Load settings from a YAML file, with env overrides."""
         path = Path(path)
         if not path.exists():

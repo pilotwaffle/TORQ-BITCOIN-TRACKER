@@ -4,7 +4,7 @@ Transaction endpoints for TBWI API.
 
 from datetime import datetime
 
-from fastapi import APIRouter, Depends, HTTPException, Query, status
+from fastapi import APIRouter, HTTPException, Query, status
 
 from tbwi.api.deps import APIKey, DBSession
 from tbwi.db.repository import TransactionRepository

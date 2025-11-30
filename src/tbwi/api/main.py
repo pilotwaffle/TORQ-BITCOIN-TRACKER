@@ -6,24 +6,19 @@ Provides REST API for querying whale events, transactions, and entity tags.
 
 from __future__ import annotations
 
-import asyncio
 from contextlib import asynccontextmanager
-from datetime import datetime
-from typing import Any
 
 import uvicorn
-from fastapi import Depends, FastAPI, HTTPException, Query, Security, status
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.security import APIKeyHeader
 
 from tbwi import __version__
+from tbwi.api.routes import entities, events, health, transactions
 from tbwi.config import get_settings
-from tbwi.db.session import close_db, get_db, init_db
+from tbwi.db.session import close_db, init_db
 from tbwi.logging import get_logger, setup_logging
+from tbwi.services.bitcoin_rpc import close_rpc_client
 from tbwi.services.message_queue import close_message_queue, get_message_queue
-from tbwi.services.bitcoin_rpc import close_rpc_client, get_rpc_client
-
-from tbwi.api.routes import events, transactions, entities, health
 
 logger = get_logger(__name__)
 

@@ -8,7 +8,6 @@ from __future__ import annotations
 
 import asyncio
 import signal
-from datetime import datetime
 from typing import Any
 
 from tbwi.config import get_settings
@@ -19,13 +18,12 @@ from tbwi.models.schemas import (
     ClassifiedTransaction,
     EnrichedInput,
     EnrichedOutput,
-    EntityCategory,
     NormalizedTransaction,
     TransactionType,
 )
-from tbwi.services.bitcoin_rpc import get_rpc_client, close_rpc_client
-from tbwi.services.message_queue import get_message_queue, close_message_queue
-from tbwi.services.price_oracle import get_price_oracle, close_price_oracle
+from tbwi.services.bitcoin_rpc import close_rpc_client
+from tbwi.services.message_queue import close_message_queue, get_message_queue
+from tbwi.services.price_oracle import close_price_oracle, get_price_oracle
 
 logger = get_logger(__name__)
 
