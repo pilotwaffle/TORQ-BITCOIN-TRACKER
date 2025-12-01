@@ -108,9 +108,13 @@ class EntityCategory(str, Enum):
     EXCHANGE_DEPOSIT = "exchange_deposit"
     EXCHANGE_HOT = "exchange_hot"
     EXCHANGE_COLD = "exchange_cold"
+    EXCHANGE_COLD_STORAGE = "exchange_cold_storage"
+    ETF_CUSTODY = "etf_custody"
     OTC_ENTITY = "otc_entity"
+    OTC_DESK = "otc_desk"
     MINING_POOL = "mining_pool"
     CUSTODIAN = "custodian"
+    GOVERNMENT = "government"
     UNKNOWN = "unknown"
 
 
