@@ -280,6 +280,29 @@ class TransactionClassifier:
         if is_large and len(outputs) > 1:
             types.append(TransactionType.LARGE_MULTI_OUTPUT)
 
+        # Programmatic split detection (institutional pattern)
+        # Triggered by: multiple identical output amounts OR multiple outputs to same address
+        if is_large and len(outputs) >= 3:
+            output_values = [round(out.value_btc, 8) for out in outputs]
+            output_addresses = [out.address for out in outputs if out.address]
+
+            # Check for identical output amounts (3+ outputs with same value)
+            from collections import Counter
+
+            value_counts = Counter(output_values)
+            max_identical = max(value_counts.values()) if value_counts else 0
+
+            # Check for same-address outputs (3+ outputs to same address)
+            addr_counts = Counter(output_addresses)
+            max_same_addr = max(addr_counts.values()) if addr_counts else 0
+
+            if max_identical >= 3 or max_same_addr >= 3:
+                types.insert(0, TransactionType.PROGRAMMATIC_SPLIT)  # High priority
+
+        # Consolidation detection (many inputs → few outputs)
+        if is_large and len(tx.outputs) <= 2 and len(inputs) >= 5:
+            types.append(TransactionType.CONSOLIDATION)
+
         # Default for large transactions
         if is_large and not types:
             types.append(TransactionType.UNKNOWN_LARGE)
