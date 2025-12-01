@@ -206,6 +206,65 @@ class WebhookPayload(BaseModel):
     txids: list[str] = Field(default_factory=list)
 
 
+class SignalDirection(str, Enum):
+    """Trading signal direction."""
+
+    BULLISH = "BULLISH"
+    BEARISH = "BEARISH"
+    NEUTRAL = "NEUTRAL"
+
+
+class SignalSeverity(str, Enum):
+    """Signal severity/urgency level."""
+
+    LOW = "LOW"
+    MEDIUM = "MEDIUM"
+    HIGH = "HIGH"
+    CRITICAL = "CRITICAL"
+
+
+class TradingSignal(BaseModel):
+    """
+    Actionable trading signal derived from whale activity.
+
+    Transforms raw blockchain events into trader-friendly signals.
+    """
+
+    signal_id: UUID = Field(default_factory=uuid4, description="Unique signal ID")
+    created_at: datetime = Field(
+        default_factory=datetime.utcnow, description="Signal generation time"
+    )
+    signal: SignalDirection = Field(..., description="BULLISH, BEARISH, or NEUTRAL")
+    confidence: float = Field(
+        ..., ge=0.0, le=1.0, description="Confidence score 0-1"
+    )
+    severity: SignalSeverity = Field(..., description="Signal urgency level")
+    summary: str = Field(..., description="Human-readable summary")
+    interpretation: str = Field(
+        ..., description="What this signal means for traders"
+    )
+    suggested_action: str = Field(
+        ..., description="Recommended trading action"
+    )
+    total_btc: float = Field(..., description="Total BTC involved")
+    total_usd: float | None = Field(None, description="Total USD value")
+    time_window_minutes: int = Field(
+        ..., description="Time window these events occurred in"
+    )
+    event_count: int = Field(..., description="Number of events in this signal")
+    primary_entity: str | None = Field(
+        None, description="Primary entity involved (e.g., Coinbase, Binance)"
+    )
+    raw_event_ids: list[str] = Field(
+        default_factory=list, description="Underlying whale event IDs"
+    )
+    txids: list[str] = Field(
+        default_factory=list, description="Transaction IDs contributing to signal"
+    )
+
+    model_config = {"from_attributes": True}
+
+
 class HealthStatus(BaseModel):
     """Health check response."""
 
