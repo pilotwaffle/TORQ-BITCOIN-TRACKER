@@ -14,7 +14,33 @@ from tbwi.models.schemas import EntityCategory
 # =============================================================================
 
 EXCHANGE_DEPOSITS: dict[str, dict] = {
-    # Binance
+    # Binance - Main Cold Wallets (CRITICAL - #1 richest Bitcoin address!)
+    "34xp4vRoCGJym3xR7yCVPFHoCNxv4Twseo": {
+        "label": "Binance Cold Wallet #1",
+        "category": EntityCategory.EXCHANGE_COLD_STORAGE,
+        "confidence": 0.99,
+        "source": "public_disclosure",
+        "notes": "Main Binance cold wallet - 248K+ BTC",
+    },
+    "3FrSzikNqBgikWgTHixywhXcx57q6H6rHC": {
+        "label": "Binance Cold Wallet #2",
+        "category": EntityCategory.EXCHANGE_COLD_STORAGE,
+        "confidence": 0.98,
+        "source": "public_disclosure",
+    },
+    "3M219KR5vEneNb47ewrPfWyb5jQ2DjxRP6": {
+        "label": "Binance Cold Wallet #3",
+        "category": EntityCategory.EXCHANGE_COLD_STORAGE,
+        "confidence": 0.98,
+        "source": "public_disclosure",
+    },
+    "16ftSEQ4ctQFDtVZiUBusQUjRrGhM3JYwe": {
+        "label": "Binance Wallet",
+        "category": EntityCategory.EXCHANGE_HOT,
+        "confidence": 0.97,
+        "source": "public_disclosure",
+        "notes": "~158K BTC",
+    },
     "bc1qm34lsc65zpw79lxes69zkqmk6ee3ewf0j77s3h": {
         "label": "Binance",
         "category": EntityCategory.EXCHANGE_DEPOSIT,
@@ -85,11 +111,12 @@ EXCHANGE_DEPOSITS: dict[str, dict] = {
         "confidence": 0.90,
         "source": "blockchain_analysis",
     },
+    # Huobi/HTX - CORRECTED (was incorrectly labeled as Gemini)
     "3Cbq7aT1tY8kMxWLbitaG7yT6bPbKChq64": {
-        "label": "Gemini",
-        "category": EntityCategory.EXCHANGE_DEPOSIT,
-        "confidence": 0.90,
-        "source": "blockchain_analysis",
+        "label": "Huobi/HTX Cold Wallet",
+        "category": EntityCategory.EXCHANGE_COLD_STORAGE,
+        "confidence": 0.95,
+        "source": "public_disclosure",
     },
     # OKX
     "bc1q2s3rjwvam9dt2ftt4sqxqjf3twav0gdx0k0q2etxflx38c3x4j3qn9j22e": {
@@ -144,6 +171,60 @@ EXCHANGE_DEPOSITS: dict[str, dict] = {
         "category": EntityCategory.EXCHANGE_DEPOSIT,
         "confidence": 0.86,
         "source": "blockchain_analysis",
+    },
+    # Bitstamp Cold Wallet (main)
+    "3Nxwenay9Z8Lc9JBiywExpnEFiLp6Afp8v": {
+        "label": "Bitstamp Cold Wallet",
+        "category": EntityCategory.EXCHANGE_COLD_STORAGE,
+        "confidence": 0.97,
+        "source": "public_disclosure",
+    },
+    # Bittrex Cold Wallet
+    "16rCmCmbuWDhPjWTrpQGaU3EPdZF7MTdUk": {
+        "label": "Bittrex Cold Wallet",
+        "category": EntityCategory.EXCHANGE_COLD_STORAGE,
+        "confidence": 0.95,
+        "source": "public_disclosure",
+    },
+    # Coincheck Cold Wallet
+    "336xGpGweq1wtY4kRTuA4w6d7yDkBU9czU": {
+        "label": "Coincheck Cold Wallet",
+        "category": EntityCategory.EXCHANGE_COLD_STORAGE,
+        "confidence": 0.94,
+        "source": "public_disclosure",
+    },
+    # Kraken (multiple known addresses)
+    "1AnwDVbwsLBVwRfqN2x9Eo4YEJSPXo2cwG": {
+        "label": "Kraken",
+        "category": EntityCategory.EXCHANGE_HOT,
+        "confidence": 0.94,
+        "source": "public_disclosure",
+    },
+    "14eQD1QQb8QFVG8YFwGz7skyzsvBLWLwJS": {
+        "label": "Kraken",
+        "category": EntityCategory.EXCHANGE_HOT,
+        "confidence": 0.94,
+        "source": "public_disclosure",
+    },
+    "1A7znRYE24Z6K8MCAKXLmEvuS5ixzvUrjH": {
+        "label": "Kraken",
+        "category": EntityCategory.EXCHANGE_HOT,
+        "confidence": 0.94,
+        "source": "public_disclosure",
+    },
+    # Poloniex
+    "17A16QmavnUfCW11DAApiJxp7ARnxN5pGX": {
+        "label": "Poloniex",
+        "category": EntityCategory.EXCHANGE_HOT,
+        "confidence": 0.92,
+        "source": "public_disclosure",
+    },
+    # Robinhood (3rd largest wallet holder)
+    "bc1ql49ydapnjafl5t2cp9zqpjwe6pdgmxy98859v2": {
+        "label": "Robinhood Cold Wallet",
+        "category": EntityCategory.EXCHANGE_COLD_STORAGE,
+        "confidence": 0.96,
+        "source": "arkham_intelligence",
     },
 }
 
