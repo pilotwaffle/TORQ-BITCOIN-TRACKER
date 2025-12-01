@@ -48,6 +48,10 @@ FROM base AS zmq-listener
 ENV SERVICE=zmq-listener
 CMD ["python", "-m", "tbwi.services.zmq_listener"]
 
+FROM base AS mempool-listener
+ENV SERVICE=mempool-listener
+CMD ["python", "-m", "tbwi.services.mempool_listener"]
+
 FROM base AS classifier
 ENV SERVICE=classifier
 CMD ["python", "-m", "tbwi.services.classifier"]

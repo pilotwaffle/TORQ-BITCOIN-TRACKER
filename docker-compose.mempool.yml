@@ -1,0 +1,189 @@
+# TBWI - Torq Bitcoin Whale Intelligence
+# Docker Compose for MEMPOOL.SPACE mode (No Bitcoin node required!)
+#
+# Usage: docker-compose -f docker-compose.mempool.yml up -d
+#
+# This mode uses mempool.space's free API for real-time mainnet transactions.
+# Zero Bitcoin storage required!
+
+version: "3.9"
+
+services:
+  # ============================================================================
+  # Infrastructure Services
+  # ============================================================================
+
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: tbwi-postgres
+    environment:
+      POSTGRES_DB: tbwi
+      POSTGRES_USER: tbwi
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-tbwi_secret}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tbwi -d tbwi"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # Redis for message queue
+  redis:
+    image: redis:7-alpine
+    container_name: tbwi-redis
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # ============================================================================
+  # TBWI Application Services (Mempool.space Mode)
+  # ============================================================================
+
+  # Mempool.space Listener - Streams transactions from mempool.space API
+  mempool-listener:
+    build:
+      context: .
+      target: mempool-listener
+    container_name: tbwi-mempool-listener
+    depends_on:
+      redis:
+        condition: service_healthy
+    environment:
+      - BITCOIN_NETWORK=mainnet
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - THRESHOLD_MIN_TX_BTC=${MIN_TX_THRESHOLD_BTC:-10}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+    restart: unless-stopped
+
+  # Transaction Classifier
+  classifier:
+    build:
+      context: .
+      target: classifier
+    container_name: tbwi-classifier
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    environment:
+      - BITCOIN_NETWORK=mainnet
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=tbwi
+      - DB_USER=tbwi
+      - DB_PASSWORD=${DB_PASSWORD:-tbwi_secret}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - THRESHOLD_LARGE_TX_BTC=${LARGE_TX_THRESHOLD_BTC:-50}
+      - PRICE_ENABLED=${PRICE_ENABLED:-true}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+    restart: unless-stopped
+
+  # Event Engine - Clusters transactions into whale events
+  event-engine:
+    build:
+      context: .
+      target: event-engine
+    container_name: tbwi-event-engine
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    environment:
+      - BITCOIN_NETWORK=mainnet
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=tbwi
+      - DB_USER=tbwi
+      - DB_PASSWORD=${DB_PASSWORD:-tbwi_secret}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - THRESHOLD_SINGLE_DEPOSIT_BTC=${SINGLE_DEPOSIT_THRESHOLD_BTC:-1000}
+      - THRESHOLD_DEPOSIT_BURST_MIN_COUNT=${DEPOSIT_BURST_MIN_COUNT:-10}
+      - THRESHOLD_DEPOSIT_BURST_MIN_BTC=${DEPOSIT_BURST_MIN_BTC:-1000}
+      - THRESHOLD_DEPOSIT_BURST_WINDOW_MINUTES=${DEPOSIT_BURST_WINDOW_MINUTES:-10}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+    restart: unless-stopped
+
+  # Webhook Dispatcher - Sends events to external webhooks
+  webhook-dispatcher:
+    build:
+      context: .
+      target: webhook-dispatcher
+    container_name: tbwi-webhook-dispatcher
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=tbwi
+      - DB_USER=tbwi
+      - DB_PASSWORD=${DB_PASSWORD:-tbwi_secret}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - WEBHOOK_ENABLED=${WEBHOOK_ENABLED:-true}
+      - WEBHOOK_URLS=${WEBHOOK_URLS:-}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+    restart: unless-stopped
+
+  # REST API Gateway
+  api:
+    build:
+      context: .
+      target: api
+    container_name: tbwi-api
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8080:8000"
+    environment:
+      - BITCOIN_NETWORK=mainnet
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=tbwi
+      - DB_USER=tbwi
+      - DB_PASSWORD=${DB_PASSWORD:-tbwi_secret}
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - API_HOST=0.0.0.0
+      - API_PORT=8000
+      - API_API_KEY=${API_KEY:-}
+      - API_CORS_ORIGINS=${CORS_ORIGINS:-*}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      - ENVIRONMENT=${ENVIRONMENT:-development}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health/live"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  default:
+    name: tbwi-network

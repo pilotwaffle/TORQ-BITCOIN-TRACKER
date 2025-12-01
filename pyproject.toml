@@ -45,6 +45,7 @@ dependencies = [
     "pyyaml>=6.0.1",
     "tenacity>=8.2.3",
     "cachetools>=5.3.2",
+    "websockets>=12.0",
 ]
 
 [project.optional-dependencies]
@@ -60,6 +61,7 @@ dev = [
 
 [project.scripts]
 tbwi-zmq-listener = "tbwi.services.zmq_listener:main"
+tbwi-mempool-listener = "tbwi.services.mempool_listener:main"
 tbwi-classifier = "tbwi.services.classifier:main"
 tbwi-event-engine = "tbwi.services.event_engine:main"
 tbwi-api = "tbwi.api.main:main"
